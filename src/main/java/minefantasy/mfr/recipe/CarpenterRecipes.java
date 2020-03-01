@@ -695,7 +695,7 @@ public class CarpenterRecipes {
 
     private static int getSize(ItemStack food) {
         if (food != null && food.getItem() instanceof ItemFood) {
-            int feed = ((ItemFood) food.getItem()).func_150905_g(food);
+            int feed = ((ItemFood) food.getItem()).getHealAmount(food);
             return Math.max(1, feed - 1);
         }
         return 1;

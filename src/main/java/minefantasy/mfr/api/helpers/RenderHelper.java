@@ -1,13 +1,16 @@
 package minefantasy.mfr.api.helpers;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.KeyBinding;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
-import java.util.List;
 
 public final class RenderHelper {
 
@@ -93,15 +96,29 @@ public final class RenderHelper {
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glShadeModel(GL11.GL_SMOOTH);
-        Tessellator var15 = Tessellator.getInstance();
-        var15.startDrawingQuads();
-        var15.setColorRGBA_F(var8, var9, var10, var7);
-        var15.addVertex(par3, par2, z);
-        var15.addVertex(par1, par2, z);
-        var15.setColorRGBA_F(var12, var13, var14, var11);
-        var15.addVertex(par1, par4, z);
-        var15.addVertex(par3, par4, z);
-        var15.draw();
+        Tessellator tess = Tessellator.getInstance();
+        BufferBuilder buffer = tess.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+
+        /*
+        //How Mangoose uses the tessellator in Rustic ... guidance?
+        buffer.pos(x+0.1875, y+0.0625+0.1875*((float)amount/(float)capacity), 
+        		z+0.1875).tex(minU, minV).lightmap(lightx,lighty).color(red,green,blue,alpha).endVertex();
+        buffer.pos(x+0.8125, y+0.0625+0.1875*((float)amount/(float)capacity), 
+        		z+0.1875).tex(maxU, minV).lightmap(lightx,lighty).color(red,green,blue,alpha).endVertex();
+        buffer.pos(x+0.8125, y+0.0625+0.1875*((float)amount/(float)capacity), 
+        		z+0.8125).tex(maxU, maxV).lightmap(lightx,lighty).color(red,green,blue,alpha).endVertex();
+        buffer.pos(x+0.1875, y+0.0625+0.1875*((float)amount/(float)capacity), 
+        		z+0.8125).tex(minU, maxV).lightmap(lightx,lighty).color(red,green,blue,alpha).endVertex();
+        */
+        
+        buffer.setColorRGBA_F(var8, var9, var10, var7);
+        buffer.addVertex(par3, par2, z);
+        buffer.addVertex(par1, par2, z);
+        buffer.setColorRGBA_F(var12, var13, var14, var11);
+        buffer.addVertex(par1, par4, z);
+        buffer.addVertex(par3, par4, z);
+        tess.draw();
         GL11.glShadeModel(GL11.GL_FLAT);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
